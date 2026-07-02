@@ -1,4 +1,4 @@
-import pandas as p
+import pandas as pd
 import streamlit as st
 from services.attendance_service import (
     close_session,
