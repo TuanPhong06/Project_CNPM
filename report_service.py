@@ -25,14 +25,46 @@ def get_absence_summary(section_id: int):
 
 def export_section_attendance_to_excel(section_id: int) -> bytes:
     records = get_section_attendance(section_id)
+
     df = pd.DataFrame(records)
 
+    show_columns = [
+        "student_code",
+        "full_name",
+        "status",
+        "checkin_time",
+        "method",
+        "edit_reason"
+    ]
+
+    available_columns = [
+        c for c in show_columns
+        if c in df.columns
+    ]
+
+    df = df[available_columns]
+
+    df = df.rename(
+        columns={
+            "student_code": "Student Code",
+            "full_name": "Student Name",
+            "status": "Attendance Status",
+            "checkin_time": "Check-in Time",
+            "method": "Method",
+            "edit_reason": "Edit Reason",
+        }
+    )
+
     output = BytesIO()
+
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name="Attendance")
+        df.to_excel(
+            writer,
+            index=False,
+            sheet_name="Attendance Report"
+        )
 
     return output.getvalue()
-
 
 def get_all_sections():
     conn = get_connection()
@@ -48,3 +80,4 @@ def get_all_sections():
     ).fetchall()
     conn.close()
     return [dict(row) for row in rows]
+
