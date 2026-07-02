@@ -174,12 +174,13 @@ def get_section_attendance(section_id: int):
     rows = conn.execute(
         """
         SELECT
-            s.id AS student_id,
-            s.student_code,
-            u.full_name,
-            COALESCE(ar.status, 'Absent') AS status,
-            ar.checkin_time,
-            ar.method
+    s.id AS student_id,
+    s.student_code,
+    u.full_name,
+    COALESCE(ar.status,'Absent') AS status,
+    ar.checkin_time,
+    ar.method,
+    ar.edit_reason
         FROM enrollments e
         JOIN students s ON s.id = e.student_id
         JOIN users u ON u.id = s.user_id
@@ -194,20 +195,36 @@ def get_section_attendance(section_id: int):
     return [dict(row) for row in rows]
 
 
-def update_attendance_status(section_id: int, student_id: int, status: str, edited_by_user_id: int):
+def update_attendance_status(
+    section_id,
+    student_id,
+    status,
+    lecturer_id,
+    reason=""
+):
     conn = get_connection()
-    time_text = now_text()
+
     conn.execute(
         """
-        INSERT INTO attendance_records(section_id, student_id, checkin_time, method, status, edited_by, updated_at)
-        VALUES (?, ?, NULL, 'Manual Edit', ?, ?, ?)
-        ON CONFLICT(section_id, student_id)
-        DO UPDATE SET status = excluded.status,
-                      method = 'Manual Edit',
-                      edited_by = excluded.edited_by,
-                      updated_at = excluded.updated_at
+        UPDATE attendance_records
+        SET
+            status = ?,
+            edited_by = ?,
+            edit_reason = ?,
+            updated_at = ?
+        WHERE
+            section_id = ?
+            AND student_id = ?
         """,
-        (section_id, student_id, status, edited_by_user_id, time_text),
+        (
+            status,
+            lecturer_id,
+            reason,
+            now_text(),
+            section_id,
+            student_id,
+        ),
     )
+
     conn.commit()
     conn.close()
