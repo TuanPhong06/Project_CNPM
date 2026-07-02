@@ -75,21 +75,23 @@ def init_db():
         );
 
         CREATE TABLE IF NOT EXISTS attendance_records (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            section_id INTEGER NOT NULL,
-            student_id INTEGER NOT NULL,
-            checkin_time TEXT,
-            method TEXT DEFAULT 'Attendance Session Code',
-            status TEXT NOT NULL CHECK(status IN ('Present', 'Late', 'Absent', 'Excused Absent')),
-            edited_by INTEGER,
-            updated_at TEXT,
-            UNIQUE(section_id, student_id),
-            FOREIGN KEY(section_id) REFERENCES class_sections(id),
-            FOREIGN KEY(student_id) REFERENCES students(id),
-            FOREIGN KEY(edited_by) REFERENCES users(id)
-        );
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        section_id INTEGER NOT NULL,
+        student_id INTEGER NOT NULL,
+        checkin_time TEXT,
+        method TEXT DEFAULT 'Attendance Session Code',
+        status TEXT NOT NULL CHECK(status IN ('Present', 'Late', 'Absent', 'Excused Absent')),
+        edited_by INTEGER,
+        edit_reason TEXT,
+        updated_at TEXT,
+        UNIQUE(section_id, student_id),
+        FOREIGN KEY(section_id) REFERENCES class_sections(id),
+        FOREIGN KEY(student_id) REFERENCES students(id),
+        FOREIGN KEY(edited_by) REFERENCES users(id)
+);
         """
     )
 
     conn.commit()
     conn.close()
+
