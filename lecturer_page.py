@@ -25,11 +25,17 @@ def render_lecturer_page(user: dict):
         f"{s['section_code']} - {s['course_name']} ({s['status']})": s
         for s in sections
     }
-    selected_label = st.selectbox("Select class section", list(section_labels.keys()))
+
+    selected_label = st.selectbox(
+        "Select class section",
+        list(section_labels.keys())
+    )
+
     selected_section = section_labels[selected_label]
     section_id = selected_section["id"]
 
     st.subheader("Session Control")
+
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -51,33 +57,74 @@ def render_lecturer_page(user: dict):
             st.metric("Current code", "Not opened")
 
     st.divider()
+
     st.subheader("Real-time Attendance List")
+
     records = get_section_attendance(section_id)
+
     df = pd.DataFrame(records)
-    st.dataframe(df, use_container_width=True)
+
+    show_columns = [
+        "student_code",
+        "full_name",
+        "status",
+        "checkin_time",
+        "edit_reason"
+    ]
+
+    available_columns = [
+        c for c in show_columns
+        if c in df.columns
+    ]
+
+    st.dataframe(
+        df[available_columns],
+        use_container_width=True
+    )
 
     st.subheader("Manual Edit Attendance")
+
     if records:
+
         student_labels = {
             f"{r['student_code']} - {r['full_name']}": r
             for r in records
         }
-        selected_student_label = st.selectbox("Select student", list(student_labels.keys()))
+
+        selected_student_label = st.selectbox(
+            "Select student",
+            list(student_labels.keys())
+        )
+
         selected_student = student_labels[selected_student_label]
-        new_status = st.selectbox("New status", STATUS_OPTIONS)
+
+        new_status = st.selectbox(
+            "New status",
+            STATUS_OPTIONS
+        )
+
+        edit_reason = st.text_area(
+            "Reason for editing (optional)",
+            placeholder="Example: Student showed medical certificate..."
+        )
 
         if st.button("Save manual edit"):
+
             update_attendance_status(
-                section_id,
-                selected_student["student_id"],
-                new_status,
-                user["id"],
+                section_id=section_id,
+                student_id=selected_student["student_id"],
+                status=new_status,
+                lecturer_id=user["id"],
+                reason=edit_reason
             )
-            st.success("Attendance status updated.")
+
+            st.success("Attendance updated successfully.")
             st.rerun()
 
     st.subheader("Export Report")
+
     excel_bytes = export_section_attendance_to_excel(section_id)
+
     st.download_button(
         label="Download attendance Excel file",
         data=excel_bytes,
