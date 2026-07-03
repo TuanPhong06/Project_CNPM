@@ -57,7 +57,8 @@ def init_db():
             room TEXT,
             start_time TEXT,
             end_time TEXT,
-            status TEXT DEFAULT 'not_opened' CHECK(status IN ('not_opened', 'open', 'closed')),
+            status TEXT DEFAULT 'not_opened'
+                CHECK(status IN ('not_opened', 'open', 'closed')),
             session_code TEXT,
             opened_at TEXT,
             closed_at TEXT,
@@ -75,23 +76,46 @@ def init_db():
         );
 
         CREATE TABLE IF NOT EXISTS attendance_records (
-         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        section_id INTEGER NOT NULL,
-        student_id INTEGER NOT NULL,
-        checkin_time TEXT,
-        method TEXT DEFAULT 'Attendance Session Code',
-        status TEXT NOT NULL CHECK(status IN ('Present', 'Late', 'Absent', 'Excused Absent')),
-        edited_by INTEGER,
-        edit_reason TEXT,
-        updated_at TEXT,
-        UNIQUE(section_id, student_id),
-        FOREIGN KEY(section_id) REFERENCES class_sections(id),
-        FOREIGN KEY(student_id) REFERENCES students(id),
-        FOREIGN KEY(edited_by) REFERENCES users(id)
-);
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            section_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            checkin_time TEXT,
+            method TEXT DEFAULT 'Attendance Session Code',
+            status TEXT NOT NULL
+                CHECK(status IN ('Present', 'Late', 'Absent', 'Excused Absent')),
+            edited_by INTEGER,
+            edit_reason TEXT,
+            updated_at TEXT,
+            UNIQUE(section_id, student_id),
+            FOREIGN KEY(section_id) REFERENCES class_sections(id),
+            FOREIGN KEY(student_id) REFERENCES students(id),
+            FOREIGN KEY(edited_by) REFERENCES users(id)
+        );
         """
     )
 
+    # Tự động cập nhật database cũ
+    columns = [
+        row["name"]
+        for row in cursor.execute(
+            "PRAGMA table_info(attendance_records)"
+        ).fetchall()
+    ]
+
+    if "edited_by" not in columns:
+        cursor.execute(
+            "ALTER TABLE attendance_records ADD COLUMN edited_by INTEGER"
+        )
+
+    if "edit_reason" not in columns:
+        cursor.execute(
+            "ALTER TABLE attendance_records ADD COLUMN edit_reason TEXT"
+        )
+
+    if "updated_at" not in columns:
+        cursor.execute(
+            "ALTER TABLE attendance_records ADD COLUMN updated_at TEXT"
+        )
+
     conn.commit()
     conn.close()
-
