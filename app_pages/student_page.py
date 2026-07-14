@@ -20,7 +20,6 @@ def get_student_profile(user_id):
             s.id AS student_id,
             s.student_code,
             s.major,
-            s.face_template,
             u.id AS user_id,
             u.username,
             u.full_name,
@@ -207,4 +206,4 @@ def render_student_page(user):
         st.write(f"Major: **{profile['major'] or 'N/A'}**")
         st.write(f"Email: **{profile['email'] or 'N/A'}**")
         st.write(f"Phone: **{profile['phone'] or 'N/A'}**")
-        st.write(f"Face Template: **{profile['face_template'] or 'Not updated'}**")
+

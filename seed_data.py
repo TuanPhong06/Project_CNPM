@@ -43,10 +43,20 @@ def seed_data(reset: bool = True):
 
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     users = [
-        ("admin01", "123456", "Academic Admin", "admin01@school.edu.vn", "", "admin"),
-        ("lecturer01", "123456", "Dr. Nguyen Van A", "lecturer01@school.edu.vn", "0900000001", "lecturer"),
-        ("student01", "123456", "Tran Van B", "student01@student.edu.vn", "0900000002", "student"),
-        ("student02", "123456", "Tran Van C", "student02@student.edu.vn", "0900000003", "student"),
+        ("admin01", "123456", "Academic Admin", "admin01@gmail.com", "", "admin"),
+        ("lecturer01", "123456", "Dr. Henry", "Henry@gmail.com", "0900000001", "lecturer"),
+        ("lecturer02", "123456", "Dr. Jane", "Jane@gmail.com", "0900000002", "lecturer"),
+        ("lecturer03", "123456", "Dr. John", "John@gmail.com", "0900000003", "lecturer"),
+        ("student01", "123456", "John Doe", "john@gmail.com", "0900000002", "student"),
+        ("student02", "123456", "Bob Smith", "bob@gmail.com", "0900000003", "student"),
+        ("student03", "123456", "Alice Johnson", "alice@gmail.com", "0900000004", "student"),
+        ("student04", "123456", "Charlie Brown", "charlie@gmail.com", "0900000005", "student"),
+        ("student05", "123456", "Diana Prince", "diana@gmail.com", "0900000006", "student"),
+        ("student06", "123456", "Eve Wilson", "eve@gmail.com", "0900000007", "student"),
+        ("student07", "123456", "Frank Miller", "frank@gmail.com", "0900000008", "student"),
+        ("student08", "123456", "Grace Lee", "grace@gmail.com", "0900000009", "student"),
+        ("student09", "123456", "Henry Davis", "henry@gmail.com", "0900000010", "student"),
+        ("student10", "123456", "Ivy Chen", "ivy@gmail.com", "0900000011", "student"),
     ]
 
     user_ids = {}
@@ -63,26 +73,91 @@ def seed_data(reset: bool = True):
 
     cursor.execute(
         "INSERT OR IGNORE INTO lecturers(user_id, lecturer_code, department) VALUES (?, ?, ?)",
-        (user_ids["lecturer01"], "GV001", "Information Technology"),
+        (user_ids["lecturer01"], "GV001", "Software Engineering"),
+    )
+    cursor.execute(
+        "INSERT OR IGNORE INTO lecturers(user_id, lecturer_code, department) VALUES (?, ?, ?)",
+        (user_ids["lecturer02"], "GV002", "Database Systems"),
+    )
+    cursor.execute(
+        "INSERT OR IGNORE INTO lecturers(user_id, lecturer_code, department) VALUES (?, ?, ?)",
+        (user_ids["lecturer03"], "GV003", "Mathematics"),
     )
     cursor.execute(
         """
-        INSERT OR IGNORE INTO students(user_id, student_code, major, face_template)
-        VALUES (?, ?, ?, ?)
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
         """,
-        (user_ids["student01"], "SV001", "Software Engineering", "face_template_sv001_demo"),
+        (user_ids["student01"], "SV001", "Software Engineering"),
     )
     cursor.execute(
         """
-        INSERT OR IGNORE INTO students(user_id, student_code, major, face_template)
-        VALUES (?, ?, ?, ?)
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
         """,
-        (user_ids["student02"], "SV002", "Software Engineering", "face_template_sv002_demo"),
+        (user_ids["student02"], "SV002", "Software Engineering"),
     )
-
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student03"], "SV003", "Software Engineering"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student04"], "SV004", "Database Systems"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student05"], "SV005", "Database Systems"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student06"], "SV006", "Database Systems" ),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student07"], "SV007", "Mathematics"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student08"], "SV008", "Mathematics"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student09"], "SV009", "Mathematics"),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO students(user_id, student_code, major)
+        VALUES (?, ?, ?)
+        """,
+        (user_ids["student10"], "SV010", "Software Engineering"),
+    )
+   
     courses = [
         ("SE101", "Software Engineering", 3),
         ("DB101", "Database Systems", 3),
+        ("MA101", "Mathematics", 3),
     ]
     for course_code, course_name, credits in courses:
         cursor.execute(
