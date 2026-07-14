@@ -167,7 +167,10 @@ def seed_data(reset: bool = True):
 
     course = cursor.execute("SELECT id FROM courses WHERE course_code = 'SE101'").fetchone()
     lecturer = cursor.execute("SELECT id FROM lecturers WHERE lecturer_code = 'GV001'").fetchone()
-
+    course = cursor.execute("SELECT id FROM courses WHERE course_code = 'DB101'").fetchone()
+    lecturer = cursor.execute("SELECT id FROM lecturers WHERE lecturer_code = 'GV002'").fetchone()
+    course = cursor.execute("SELECT id FROM courses WHERE course_code = 'MA101'").fetchone()
+    lecturer = cursor.execute("SELECT id FROM lecturers WHERE lecturer_code = 'GV003'").fetchone()
     cursor.execute(
         """
         INSERT OR IGNORE INTO class_sections(
@@ -188,10 +191,57 @@ def seed_data(reset: bool = True):
             "not_opened",
         ),
     )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO class_sections(
+            course_id, lecturer_id, section_code, room, semester, academic_year,
+            start_time, end_time, status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            course["id"],
+            lecturer["id"],
+            "DB101-01",
+            "Room B2.2",
+            "Semester 1",
+            "2026-2027",
+            "10:00",
+            "12:00",
+            "not_opened",
+        ),
+    )
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO class_sections(
+            course_id, lecturer_id, section_code, room, semester, academic_year,
+            start_time, end_time, status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            course["id"],
+            lecturer["id"],
+            "MA101-01",
+            "Room C3.3",
+            "Semester 1",
+            "2026-2027",
+            "13:00",
+            "15:00",
+            "not_opened",
+        ),
+    )
 
     section = cursor.execute("SELECT id FROM class_sections WHERE section_code = 'SE101-01'").fetchone()
     students = cursor.execute("SELECT id FROM students ORDER BY student_code").fetchall()
     today = datetime.now().strftime("%Y-%m-%d")
+    section = cursor.execute("SELECT id FROM class_sections WHERE section_code = 'DB101-01'").fetchone()
+    students = cursor.execute("SELECT id FROM students ORDER BY student_code").fetchall()
+    today = datetime.now().strftime("%Y-%m-%d")
+    section = cursor.execute("SELECT id FROM class_sections WHERE section_code = 'MA101-01'").fetchone()
+    students = cursor.execute("SELECT id FROM students ORDER BY student_code").fetchall()
+    today = datetime.now().strftime("%Y-%m-%d")
+
 
     for student in students:
         cursor.execute(
